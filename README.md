@@ -7,6 +7,7 @@ The package can be installed via NPM:
 npm install react-datepicker-oev --save
 
 ## log
+version 1.0.5 : change logic to date range input
 version 1.0.4 : remove trigle in date range picker
 version 1.0.3 : add quick options for ranges
 version 1.0.2 : change package.json
@@ -26,6 +27,19 @@ let datepickerQuickOptions = [{
 			"label": "One year ago",
 			"value": {"type": "year", "change": -1}
 		}];
+
+<DatePicker selected={startDate}
+            selected2={endDate}
+            onChange={handleStartDateChange}
+            onChange2={handleEndDateChange}
+            placeholderText = "Select Date"
+            dateFormat="YYYY/MM/DD"
+            showYearDropdown
+            minDate={maxDate}
+            isDateRangePicker={true}
+            quickOptionsRanges={quickOptionRanges}
+            fixedHeight={true}
+/>
 
 ---------------------------------------------------------------------------------------------
 
@@ -53,3 +67,17 @@ let quickOptionRanges = [{
             "label": "Last 6 months",
             "value": {"type": "month", "change": -6}
         }];
+
+<DatePicker selected={startDate}
+            selected2={endDate}
+            placeholderText = "Select Date"
+            dateFormat="YYYY/MM/DD"
+            showYearDropdown
+            maxDate={maxDate}
+            isDateRangePicker={true}
+            quickOptionsRanges={quickOptionRanges}
+            fixedHeight={true}
+            popoverAttachment='top right'
+            popoverTargetAttachment='bottom right'
+            onApply={handleChangeDatePicker}
+/>

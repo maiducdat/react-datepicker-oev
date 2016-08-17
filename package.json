@@ -1,12 +1,17 @@
 {
   "name": "react-datepicker-oev",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "react-datepicker with quick options, ranges",
   "scripts": {
     "test": "test"
   },
   "author": "Mai Duc Dat",
   "license": "ISC",
+  "homepage": "https://github.com/maiducdat/react-datepicker-oev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maiducdat/react-datepicker-oev.git"
+  },
   "main": "dist/react-datepicker-oev.min.js",
   "style": "dist/react-datepicker-oev.css",
   "_location": "/react-datepicker-oev",

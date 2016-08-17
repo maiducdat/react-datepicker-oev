@@ -160,7 +160,8 @@
                     isDateRangePicker: _react2.default.PropTypes.bool,
                     quickOptionsRanges: _react2.default.PropTypes.array,
                     onChange2: _react2.default.PropTypes.func,
-                    selected2: _react2.default.PropTypes.object
+                    selected2: _react2.default.PropTypes.object,
+                    onApply: _react2.default.PropTypes.func
                 },
 
                 getDefaultProps: function getDefaultProps() {
@@ -169,6 +170,8 @@
                         onChange: function onChange() {
                         },
                         onChange2: function onChange2() {
+                        },
+                        onApply: function onApply() {
                         },
 
                         disabled: false,
@@ -186,6 +189,13 @@
                         }]
                     };
                 },
+                tmpDate: null,
+                tmpDate2: null,
+                componentWillReceiveProps: function(nextProps) {
+                    this.tmpDate = nextProps.selected ? nextProps.selected.clone() : nextProps.selected;
+                    this.tmpDate2 = nextProps.selected2 ? nextProps.selected2.clone() : nextProps.selected2;
+                },
+
                 getInitialState: function getInitialState() {
                     return {
                         open: false
@@ -218,8 +228,15 @@
                     }, 1);
                 },
                 setSelected: function setSelected(date) {
-                    if (!(0, _date_utils.isSameDay)(this.props.selected, date)) {
-                        this.props.onChange(date);
+                    if (this.props.isDateRangePicker) {
+                        if (!(0, _date_utils.isSameDay)(this.tmpDate, date)) {
+                            this.tmpDate = date;
+                            this.forceUpdate();
+                        }
+                    } else {
+                        if (!(0, _date_utils.isSameDay)(this.props.selected, date)) {
+                            this.props.onChange(date);
+                        }
                     }
                 },
                 handleSelect2: function handleSelect(date) {
@@ -227,9 +244,19 @@
                     // this.setOpen(false);
                 },
                 setSelected2: function setSelected(date) {
-                    if (!(0, _date_utils.isSameDay)(this.props.selected2, date)) {
-                        this.props.onChange2(date);
+                    if (this.props.isDateRangePicker) {
+                        if (!(0, _date_utils.isSameDay)(this.tmpDate2, date)) {
+                            this.tmpDate2 = date;
+                            this.forceUpdate();
+                        }
+                    } else {
+                        if (!(0, _date_utils.isSameDay)(this.props.selected2, date)) {
+                            this.props.onChange2(date);
+                        }
                     }
+                },
+                handleApply: function handleApply() {
+                    this.props.onApply(this.tmpDate ? this.tmpDate : this.props.selected, this.tmpDate2 ? this.tmpDate2 : this.selected2);
                 },
                 onInputClick: function onInputClick() {
                     if (!this.props.disabled) {
@@ -256,7 +283,7 @@
                         ref: 'calendar',
                         locale: this.props.locale,
                         dateFormat: this.props.dateFormatCalendar,
-                        selected: this.props.selected,
+                        selected: this.props.isDateRangePicker ? this.tmpDate : this.props.selected,
                         onSelect: this.handleSelect,
                         openToDate: this.props.openToDate,
                         minDate: this.props.minDate,
@@ -275,12 +302,12 @@
 
                         isDateRangePicker: this.props.isDateRangePicker,
                         quickOptionsRanges: this.props.quickOptionsRanges,
-                        selected2: this.props.selected2,
-                        onSelect2: this.handleSelect2
+                        selected2: this.props.isDateRangePicker ? this.tmpDate2 : this.props.selected2,
+                        onSelect2: this.handleSelect2,
+                        onApply: this.handleApply
                     });
                 },
                 renderDateInput: function renderDateInput() {
-                    // console.log("renderDateInput: ", this.props.selected.toString(), this.props.selected2.toString());
                     var className = (0, _classnames3.default)(this.props.className, _defineProperty({}, outsideClickIgnoreClass, this.state.open));
                     return _react2.default.createElement(_date_input2.default, {
                         ref: 'input',
@@ -325,6 +352,12 @@
                     }
                 },
                 render: function render() {
+                    if (!this.tmpDate) {
+                        this.tmpDate = this.props.selected ? this.props.selected.clone() : this.props.selected;
+                    }
+                    if (!this.tmpDate2) {
+                        this.tmpDate2 = this.props.selected2 ? this.props.selected2.clone() : this.props.selected2;
+                    }
                     var calendar = this.renderCalendar();
 
                     if (this.props.inline) {
@@ -453,7 +486,6 @@
                     }
                 },
                 handleChangeDate: function handleChangeDate(value) {
-                    console.log("handleChangeDate: -" + value.substring(0, 10) + "-" + value.substring(13, value.length));
                     if (this.props.isDateRangePicker) {
                         if (this.props.onChangeDate) {
                             var date = (0, _moment2.default)(value.substring(0, 10), this.props.dateFormat, this.props.locale || _moment2.default.locale(), true);
@@ -484,11 +516,8 @@
                     this.setState({value: value});
                 },
                 safeDateFormat: function safeDateFormat(props) {
-                    // console.log("safeDateFormat: ", props.isDateRangePicker, props.date.toString(), props.date2.toString());
                     var startDate = props.date && props.date.clone().locale(props.locale || _moment2.default.locale()).format(props.dateFormat) || '';
                     var endDate = props.date2 && props.date2.clone().locale(props.locale || _moment2.default.locale()).format(props.dateFormat) || '';
-                    // console.log("stateDate: -" + startDate + "-");
-                    // console.log("endDate: -" + endDate + "-");
                     if(props.isDateRangePicker) {
                         return startDate + " - " + endDate;
                     } else  {
@@ -711,14 +740,19 @@
                     quickOptionsRanges: _react2.default.PropTypes.array,
                     selected2: _react2.default.PropTypes.object,
                     onSelect2: _react2.default.PropTypes.func.isRequired,
+                    onApply: _react2.default.PropTypes.func.isRequired
                 },
 
                 mixins: [__webpack_require__(8)],
 
+                tmpDate: null,
+                tmpDate2: null,
                 getInitialState: function getInitialState() {
+                    this.tmpDate = this.localizeMoment(this.getDateInView(1));
+                    this.tmpDate2 = this.localizeMoment(this.getDateInView(2));
                     return {
-                        date: this.localizeMoment(this.getDateInView(1)),
-                        date2: this.localizeMoment(this.getDateInView(2))
+                        date: this.tmpDate,
+                        date2: this.tmpDate2
                     };
                 },
                 componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
@@ -738,7 +772,12 @@
                     }
                 },
                 handleClickOutside: function handleClickOutside(event) {
+                    this.revertDate();
                     this.props.onClickOutside(event);
+                },
+                revertDate: function revertDate() {
+                    this.changeToDate(this.tmpDate);
+                    this.changeToDate2(this.tmpDate2);
                 },
                 getDateInView: function getDateInView(num) {
                     var _props = this.props;
@@ -848,14 +887,12 @@
                     this.props.onSelect2(day);
                 },
                 changeYear: function changeYear(year) {
-                    console.log("changeYear");
                     this.setState({
                         date: this.state.date.clone().set('year', year),
                         date2: this.state.date2.clone()
                     });
                 },
                 changeYear2: function changeYear2(year) {
-                    console.log("changeYear2");
                     this.setState({
                         date: this.state.date.clone(),
                         date2: this.state.date2.clone().set('year', year)
@@ -1045,7 +1082,6 @@
                             className: (this.state.quickOptionsSelected == key ? "react-datepicker__quick-obtions__button-selected" : 'react-datepicker__quick-obtions__button'),
                             key: key,
                             onClick: function onClick() {
-                                // console.log("click options: ", option);
                                 _this.choseQuickOption(key);
                                 switch (option.value.type) {
                                     case 'day': {
@@ -1136,6 +1172,7 @@
                             className: 'react-datepicker__quick-obtions__button react-datepicker__apply-btn',
                             key: "apply-button",
                             onClick: function onClick(event) {
+                                _this.props.onApply(_this.state.date, _this.state.date2);
                                 _this.props.onClickOutside(event);
                             }
                         },
