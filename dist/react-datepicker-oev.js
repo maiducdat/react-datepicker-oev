@@ -256,7 +256,12 @@
                     }
                 },
                 handleApply: function handleApply() {
-                    this.props.onApply(this.tmpDate ? this.tmpDate : this.props.selected, this.tmpDate2 ? this.tmpDate2 : this.selected2);
+                    if(!this.tmpDate.isAfter(this.tmpDate2)) {
+                        this.props.onApply(this.tmpDate ? this.tmpDate : this.props.selected, this.tmpDate2 ? this.tmpDate2 : this.selected2);
+                    } else {
+                        console.log("Start date need to be before end date");
+                        this.props.onApply(this.tmpDate ? this.tmpDate : this.props.selected, this.tmpDate ? this.tmpDate : this.props.selected);
+                    }
                 },
                 onInputClick: function onInputClick() {
                     if (!this.props.disabled) {
