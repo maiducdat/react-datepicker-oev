@@ -1,6 +1,6 @@
 {
   "name": "react-datepicker-oev",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "react-datepicker with quick options, ranges",
   "scripts": {
     "test": "test"

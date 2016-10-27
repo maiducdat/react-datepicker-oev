@@ -7,6 +7,7 @@ The package can be installed via NPM:
 npm install react-datepicker-oev --save
 
 ## log
+version 1.0.7 : fix width input 200px
 version 1.0.6 : validate if startDate is before end date
 version 1.0.5 : change logic to date range input
 version 1.0.4 : remove trigle in date range picker
